@@ -10,14 +10,14 @@ def crear_frame_organizador(parent, on_close=None):
     - parent: widget contenedor donde se añadirá el Frame
     - on_close: callback opcional que se llamará al pulsar 'Volver'
     """
-    frame = Frame(parent)
+    frame = Frame(parent, bg="#F0F2F5")
     
     # Frame principal
-    main_frame = Frame(frame, padx=10, pady=10)
+    main_frame = Frame(frame, padx=20, pady=20, bg="#F0F2F5")
     main_frame.pack(fill=BOTH, expand=True)
     
     # Título
-    titulo = Label(main_frame, text="Organizador de Archivos", font=("Arial", 14, "bold"))
+    titulo = Label(main_frame, text="Organizador de Archivos", font=("Segoe UI", 16, "bold"), bg="#F0F2F5", fg="#2C3E50")
     titulo.pack(pady=5)
     
     # Botón seleccionar carpeta
@@ -30,7 +30,7 @@ def crear_frame_organizador(parent, on_close=None):
     progress.pack(fill=X, pady=5)
     
     # Lista de archivos
-    frame_lista = Frame(main_frame)
+    frame_lista = Frame(main_frame, bg="#F0F2F5")
     frame_lista.pack(fill=BOTH, expand=True)
     
     scrollbar = Scrollbar(frame_lista)
@@ -41,7 +41,7 @@ def crear_frame_organizador(parent, on_close=None):
     scrollbar.config(command=lista_archivos.yview)
     
     # Frame para botones
-    frame_botones = Frame(main_frame)
+    frame_botones = Frame(main_frame, bg="#F0F2F5")
     frame_botones.pack(fill=X, pady=5)
     
     carpeta_seleccionada = None
@@ -150,19 +150,19 @@ def crear_frame_organizador(parent, on_close=None):
     # Botones de acción
     btn_simular = Button(
         frame_botones, text="Simular", command=lambda: procesar_archivos(True),
-        font=("Arial", 9, "bold"), height=1, width=10, padx=5, pady=2
+        font=("Segoe UI", 10, "bold"), relief="flat", cursor="hand2", bg="#2980B9", fg="white", height=1, width=10, padx=5, pady=2
     )
     btn_simular.pack(side=LEFT, padx=4)
 
     btn_ejecutar = Button(
         frame_botones, text="Organizar", command=lambda: procesar_archivos(False),
-        font=("Arial", 9, "bold"), height=1, width=10, padx=5, pady=2
+        font=("Segoe UI", 10, "bold"), relief="flat", cursor="hand2", bg="#2980B9", fg="white", height=1, width=10, padx=5, pady=2
     )
     btn_ejecutar.pack(side=LEFT, padx=4)
 
     btn_deshacer = Button(
         frame_botones, text="Deshacer", command=deshacer_cambios, state="disabled",
-        font=("Arial", 9, "bold"), height=1, width=10, padx=5, pady=2
+        font=("Segoe UI", 10, "bold"), relief="flat", cursor="hand2", bg="#2980B9", fg="white", height=1, width=10, padx=5, pady=2
     )
     btn_deshacer.pack(side=LEFT, padx=4)
 
@@ -175,7 +175,7 @@ def crear_frame_organizador(parent, on_close=None):
 
     btn_volver = Button(
         frame_botones, text="Volver", command=volver,
-        font=("Arial", 9, "bold"), height=1, width=10, padx=5, pady=2
+        font=("Segoe UI", 10, "bold"), relief="flat", cursor="hand2", bg="#2980B9", fg="white", height=1, width=10, padx=5, pady=2
     )
     btn_volver.pack(side=RIGHT, padx=4)
 
@@ -188,12 +188,12 @@ def crear_frame_organizador(parent, on_close=None):
 
     btn_abrir = Button(
         frame_botones, text="Abrir Carpeta", command=abrir_carpeta,
-        font=("Arial", 9, "bold"), height=1, width=12, padx=5, pady=2, state="disabled"
+        font=("Segoe UI", 10, "bold"), relief="flat", cursor="hand2", bg="#2980B9", fg="white", height=1, width=12, padx=5, pady=2, state="disabled"
     )
     btn_abrir.pack(side=RIGHT, padx=4)
 
     # Label para resultados
-    lbl_resultado = Label(main_frame, text="", wraplength=580)
+    lbl_resultado = Label(main_frame, text="", wraplength=580, bg="#F0F2F5", font=("Segoe UI", 10))
     lbl_resultado.pack(pady=5)
     
     return frame
