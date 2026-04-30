@@ -27,14 +27,27 @@ Cada función es independiente y se ejecuta desde un **menú principal**.
 - Editor recomendado: Visual Studio Code
 - Sistema operativo: Solo Windows 10 y posteriores
 
-## ➕ Para empaquetar el entorno grafico en un executable (.exe)
-- Pyinstaller para generar un executable del script para que sea mas amigable al usuario
-- Para instalar PYinstaller, desde la terminal de vscode o editor que este usando:
-> pip install pyinstaller
-- Algunas funciones necesitan Send2Trash, incluir en el pip:
-> pip install send2trash
-- Para generar el executable :
-> pyinstaller --onefile --windowed --icon=assets/icono.ico --add-data "assets/bsod.gif;assets" --name "PYClean" src/main.py
+## 🚀 Ejecución
+
+### Desde la terminal (Recomendado)
+1. Instala las dependencias necesarias:
+   ```bash
+   pip install -r requirements.txt
+   ```
+2. Ejecuta el script principal:
+   ```bash
+   python run.py
+   ```
+
+### 📦 Creación de Ejecutable (.exe) (Opcional)
+Si deseas generar un archivo ejecutable (.exe) para usarlo de forma independiente:
+
+1. Asegúrate de haber instalado las dependencias (`pyinstaller` está incluido en `requirements.txt`).
+2. Ejecuta el siguiente comando desde la raíz del proyecto:
+   ```bash
+   pyinstaller --onefile --windowed --icon=assets/icono.ico --add-data "assets/bsod.gif;assets" --name "PYClean" src/main.py
+   ```
+3. El archivo `PYClean.exe` se generará dentro de la carpeta `dist/`.
 ---
 ## Desarrolladores
 -Edgar Vega
