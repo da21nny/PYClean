@@ -6,7 +6,7 @@ from pathlib import Path
 
 #función para crear el frame del gestor de almacenamiento
 def crear_frame_gestor(parent, on_close=None):
-    frame = tk.Frame(parent)
+    frame = tk.Frame(parent, bg="#F0F2F5")
     archivos_encontrados = []
 
     # Definir carpetas esenciales a escanear
@@ -19,14 +19,17 @@ def crear_frame_gestor(parent, on_close=None):
         usuario / 'Desktop'
     ]
 
-    frame_botones = tk.Frame(frame)
-    frame_botones.pack(side="bottom", anchor="e", padx=10, pady=10)
+    title = tk.Label(frame, text="🔧 Gestor de Almacenamiento", font=("Segoe UI", 16, "bold"), bg="#F0F2F5", fg="#2C3E50")
+    title.pack(anchor="w", padx=20, pady=(20, 5))
 
-    progreso = ttk.Progressbar(frame, orient="horizontal", mode="determinate", length=520)
-    progreso.pack(pady=10)
+    frame_botones = tk.Frame(frame, bg="#F0F2F5")
+    frame_botones.pack(side="bottom", fill="x", padx=20, pady=10)
 
-    lbl_estado = tk.Label(frame, text="Esperando para escanear...", font=("Arial", 10))
-    lbl_estado.pack()
+    progreso = ttk.Progressbar(frame, orient="horizontal", mode="determinate")
+    progreso.pack(fill="x", padx=20, pady=5)
+
+    lbl_estado = tk.Label(frame, text="Esperando para escanear...", font=("Segoe UI", 11), bg="#F0F2F5", fg="#333333")
+    lbl_estado.pack(padx=20)
 
     columnas = ("Archivo", "Tamaño", "Ruta completa")
     tree = ttk.Treeview(frame, columns=columnas, show="headings", height=12)
@@ -35,9 +38,12 @@ def crear_frame_gestor(parent, on_close=None):
     tree.column("Archivo", width=200)
     tree.column("Tamaño", width=80)
     tree.column("Ruta completa", width=340)
-    tree.pack(pady=10, fill="both", expand=True)
 
-    scrollbar = ttk.Scrollbar(frame, orient="vertical", command=tree.yview)
+    tree_frame = tk.Frame(frame, bg="#F0F2F5")
+    tree_frame.pack(fill="both", expand=True, padx=20, pady=10)
+    tree.pack(side="left", fill="both", expand=True)
+
+    scrollbar = ttk.Scrollbar(tree_frame, orient="vertical", command=tree.yview)
     tree.configure(yscroll=scrollbar.set)
     scrollbar.pack(side="right", fill="y")
 
@@ -88,8 +94,11 @@ def crear_frame_gestor(parent, on_close=None):
                             pass
 
                         procesados += 1
-                        progreso["value"] = procesados
-                        frame.update_idletasks()
+                        try:
+                            progreso["value"] = procesados
+                            frame.update_idletasks()
+                        except tk.TclError:
+                            return
 
         if stop_event.is_set():
             lbl_estado.config(text="Escaneo cancelado.")
@@ -147,18 +156,23 @@ def crear_frame_gestor(parent, on_close=None):
         lbl_estado.config(text="Cancelando escaneo...")
 
     def cerrar_o_volver():
+        stop_event.set()
         if callable(on_close):
             on_close()
         else:
             parent.winfo_toplevel().destroy()
 
-    btn_cancelar = ttk.Button(frame_botones, text="Cancelar", command=cancelar_escaneo, state="normal")
-    btn_eliminar = ttk.Button(frame_botones, text="Eliminar seleccionados", command=eliminar_seleccionados)
-    btn_salir = ttk.Button(frame_botones, text=("Volver" if callable(on_close) else "Salir"), command=cerrar_o_volver)
+    def crear_btn(p, txt, col, cmd, st="normal"):
+        b = tk.Button(p, text=txt, command=cmd, bg=col, fg="white", font=("Segoe UI", 9, "bold"), relief="flat", cursor="hand2", state=st)
+        return b
 
-    btn_eliminar.pack(side="right", padx=(5, 0))
+    btn_salir = crear_btn(frame_botones, "↩ Volver" if callable(on_close) else "Salir", "#34495E", cerrar_o_volver)
+    btn_eliminar = crear_btn(frame_botones, "🗑️ Eliminar seleccionados", "#E74C3C", eliminar_seleccionados)
+    btn_cancelar = crear_btn(frame_botones, "✖ Cancelar", "#E74C3C", cancelar_escaneo)
+
+    btn_salir.pack(side="right", padx=(5, 0))
+    btn_eliminar.pack(side="right", padx=(5, 5))
     btn_cancelar.pack(side="right", padx=(0, 5))
-    btn_salir.pack(side="right", padx=(0, 5))
 
     #llamar función para comenzar el escaneo
     iniciar_escaneo()
