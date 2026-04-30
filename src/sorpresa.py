@@ -108,7 +108,7 @@ def crear_frame_sorpresa(parent, on_close=None):
     global _on_close_callback, _analysis_running
     _on_close_callback = on_close
     
-    frame = tk.Frame(parent, bg="#f4f4f4")
+    frame = tk.Frame(parent, bg="#F0F2F5")
     
     # Botón de volver
     if on_close:
@@ -118,11 +118,12 @@ def crear_frame_sorpresa(parent, on_close=None):
             on_close()
             
         btn_volver = tk.Button(frame, text="← Volver", command=volver_seguro, 
-                              font=("Arial", 10), bg="#607D8B", fg="white")
+                              font=("Segoe UI", 10, "bold"), bg="#2C3E50", fg="white",
+                              relief="flat", cursor="hand2")
         btn_volver.pack(anchor="nw", padx=10, pady=10)
     
-    label = tk.Label(frame, text="Analizando componentes de la PC...", 
-                    font=("Arial", 14), bg="#f4f4f4")
+    label = tk.Label(frame, text="Simulando Análisis de Drivers...\n(Esta función es una broma / Proyecto a futuro)", 
+                    font=("Segoe UI", 14), bg="#F0F2F5", fg="#333333", justify="center")
     label.pack(pady=50)
     
     progress = ttk.Progressbar(frame, orient="horizontal", length=400, mode="determinate")
