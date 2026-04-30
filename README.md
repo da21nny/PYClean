@@ -34,7 +34,7 @@ Cada función es independiente y se ejecuta desde un **menú principal**.
 - Algunas funciones necesitan Send2Trash, incluir en el pip:
 > pip install send2trash
 - Para generar el executable :
-> pyinstaller --onefile --windowed --icon=icono.ico --add-data "bsod.gif;." --name "PYClean" main.py
+> pyinstaller --onefile --windowed --icon=assets/icono.ico --add-data "assets/bsod.gif;assets" --name "PYClean" src/main.py
 ---
 ## Desarrolladores
 -Edgar Vega
