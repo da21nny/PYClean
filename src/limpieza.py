@@ -13,33 +13,33 @@ except Exception:
 
 #función para crear el frame del limpiador de archivos basura
 def crear_frame_limpieza(parent, on_close=None):
-    frame = tk.Frame(parent, bg="#f4f4f4")
+    frame = tk.Frame(parent, bg="#F0F2F5")
     frame.columnconfigure(0, weight=1)
     frame.rowconfigure(3, weight=1)
 
-    title = tk.Label(frame, text="🧹 Limpiador simple", font=("Arial", 14, "bold"), bg="#f4f4f4")
+    title = tk.Label(frame, text="🧹 Limpiador simple", font=("Segoe UI", 16, "bold"), fg="#2C3E50", bg="#F0F2F5")
     title.grid(row=0, column=0, sticky="w", padx=10, pady=(10,6))
 
-    controles = tk.Frame(frame, bg="#f4f4f4")
+    controles = tk.Frame(frame, bg="#F0F2F5")
     controles.grid(row=1, column=0, sticky="w", padx=10, pady=6)
 
     umbral_var = tk.IntVar(value=512)  # MB
     dias_var = tk.IntVar(value=365)
     modo_auto_var = tk.BooleanVar(value=False)
 
-    tk.Label(controles, text="Umbral MB:", bg="#f4f4f4").grid(row=0, column=0, padx=(0,4))
+    tk.Label(controles, text="Umbral MB:", bg="#F0F2F5").grid(row=0, column=0, padx=(0,4))
     tk.Entry(controles, width=6, textvariable=umbral_var).grid(row=0, column=1, padx=(0,8))
-    tk.Label(controles, text="Días:", bg="#f4f4f4").grid(row=0, column=2, padx=(0,4))
+    tk.Label(controles, text="Días:", bg="#F0F2F5").grid(row=0, column=2, padx=(0,4))
     tk.Entry(controles, width=6, textvariable=dias_var).grid(row=0, column=3, padx=(0,8))
-    tk.Checkbutton(controles, text="Mover automáticamente (solo temporales/vacíos)", variable=modo_auto_var, bg="#f4f4f4").grid(row=0, column=4, padx=6)
+    tk.Checkbutton(controles, text="Mover automáticamente (solo temporales/vacíos)", variable=modo_auto_var, bg="#F0F2F5").grid(row=0, column=4, padx=6)
     
-    btn_frame = tk.Frame(frame, bg="#f4f4f4")
+    btn_frame = tk.Frame(frame, bg="#F0F2F5")
     btn_frame.grid(row=2, column=0, sticky="w", padx=10, pady=(0,6))
 
     progress = ttk.Progressbar(frame, mode="indeterminate", length=600)
     progress.grid(row=3, column=0, sticky="we", padx=10, pady=(2,6))
 
-    resultado_label = tk.Label(frame, text="Estado: listo", anchor="w", bg="#f4f4f4")
+    resultado_label = tk.Label(frame, text="Estado: listo", anchor="w", bg="#F0F2F5")
     resultado_label.grid(row=4, column=0, sticky="we", padx=10, pady=(0,8))
 
     # Nueva tabla con checkbox simulado
@@ -265,23 +265,30 @@ def crear_frame_limpieza(parent, on_close=None):
             tree.item(iid, values=vals)
  
     
+    def cerrar_o_volver():
+        state["cancel"] = True
+        if on_close:
+            on_close()
+        else:
+            frame.destroy()
+
     # Botones de acción
-    scan_btn = tk.Button(btn_frame, text="🔎 Escanear", command=iniciar_escaneo, bg="#4CAF50", fg="white")
+    btn_font = ("Segoe UI", 9, "bold")
+    scan_btn = tk.Button(btn_frame, text="🔎 Escanear", command=iniciar_escaneo, bg="#27AE60", relief="flat", cursor="hand2", fg="white", font=btn_font)
     scan_btn.grid(row=0, column=0, padx=4)
-    cancel_btn = tk.Button(btn_frame, text="✖ Cancelar", command=cancelar_escaneo, bg="#f44336", fg="white", state="disabled")
+    cancel_btn = tk.Button(btn_frame, text="✖ Cancelar", command=cancelar_escaneo, bg="#E74C3C", relief="flat", cursor="hand2", fg="white", state="disabled", font=btn_font)
     cancel_btn.grid(row=0, column=1, padx=4)
-    tk.Button(btn_frame, text="☑️ Seleccionar Todo", command=seleccionar_todo, bg="#2196F3", fg="white").grid(row=0, column=2, padx=4)
-    tk.Button(btn_frame, text="☐ Deseleccionar Todo", command=deseleccionar_todo, bg="#9E9E9E", fg="white").grid(row=0, column=3, padx=4)
-    tk.Button(btn_frame, text="🗑️ Mover seleccionados", command=mover_seleccionados, bg="#FF9800", fg="white").grid(row=0, column=4, padx=4)
-    tk.Button(btn_frame, text="🗄 Abrir papelera", command=abrir_trash, bg="#757575", fg="white").grid(row=0, column=5, padx=4)
+    tk.Button(btn_frame, text="☑️ Seleccionar Todo", command=seleccionar_todo, bg="#2980B9", relief="flat", cursor="hand2", fg="white", font=btn_font).grid(row=0, column=2, padx=4)
+    tk.Button(btn_frame, text="☐ Deseleccionar Todo", command=deseleccionar_todo, bg="#BDC3C7", relief="flat", cursor="hand2", fg="white", font=btn_font).grid(row=0, column=3, padx=4)
+    tk.Button(btn_frame, text="🗑️ Mover seleccionados", command=mover_seleccionados, bg="#F39C12", relief="flat", cursor="hand2", fg="white", font=btn_font).grid(row=0, column=4, padx=4)
+    tk.Button(btn_frame, text="🗄 Abrir papelera", command=abrir_trash, bg="#7F8C8D", relief="flat", cursor="hand2", fg="white", font=btn_font).grid(row=0, column=5, padx=4)
     
     # Botón Volver separado al final
-    tk.Button(btn_frame, text="↩️ Volver", command=(on_close if on_close else frame.destroy), bg="#607D8B", fg="white").grid(row=0, column=6, padx=(20,4))
-#   tk.Button(btn_frame, text="↩️ Volver", command=(on_close if on_close else frame.destroy), bg="#607D8B", fg="white").grid(row=0, column=4, padx=8)
+    tk.Button(btn_frame, text="↩️ Volver", command=cerrar_o_volver, bg="#34495E", relief="flat", cursor="hand2", fg="white", font=btn_font).grid(row=0, column=6, padx=(20,4))
 
 
     nota_text = "Los archivos se moverán a la Papelera de reciclaje del sistema." if send2trash else f"send2trash no instalado. Los archivos se moverán a: {LOCAL_TRASH}"
-    nota = tk.Label(frame, text=nota_text + "\n(Se recomienda revisar antes de vaciar)", bg="#f4f4f4", fg="#666", justify="left")
+    nota = tk.Label(frame, text=nota_text + "\n(Se recomienda revisar antes de vaciar)", bg="#F0F2F5", fg="#666", justify="left")
     nota.grid(row=6, column=0, sticky="w", padx=10, pady=(6,10))
 
     return frame
