@@ -15,7 +15,7 @@ except ImportError:
 
 # Funcion principal para crear el frame o ventana donde se buscan los archivos duplicados
 def crear_frame_duplicados(parent, on_close=None):
-    frame = tk.Frame(parent)
+    frame = tk.Frame(parent, bg="#F0F2F5")
     archivos_encontrados = []
 
 # Rutas seguras para escanear
@@ -29,17 +29,21 @@ def crear_frame_duplicados(parent, on_close=None):
         usuario / "Videos"
     ]
 
+    # Header title
+    title = tk.Label(frame, text="🔍 Archivos Duplicados", font=("Segoe UI", 16, "bold"), bg="#F0F2F5", fg="#2C3E50")
+    title.pack(anchor="w", padx=20, pady=(20, 5))
+
     # Crear widgets de la interfaz
-    frame_botones = tk.Frame(frame)
-    frame_botones.pack(side="bottom", anchor="e", padx=10, pady=10)
+    frame_botones = tk.Frame(frame, bg="#F0F2F5")
+    frame_botones.pack(side="bottom", fill="x", padx=20, pady=10)
 
 #progreso de escaneo
-    progreso = ttk.Progressbar(frame, orient="horizontal", mode="determinate", length=520)
-    progreso.pack(pady=10)
+    progreso = ttk.Progressbar(frame, orient="horizontal", mode="determinate")
+    progreso.pack(fill="x", padx=20, pady=5)
 
 #Estado del escaneo
-    lbl_estado = tk.Label(frame, text="Esperando para escanear...", font=("Arial", 10))
-    lbl_estado.pack()
+    lbl_estado = tk.Label(frame, text="Esperando para escanear...", font=("Segoe UI", 11), bg="#F0F2F5", fg="#333333")
+    lbl_estado.pack(padx=20)
 
 # Crear Treeview para mostrar Resultados
     columnas = ("check", "Archivo", "Tamaño", "Ruta completa")
@@ -48,14 +52,17 @@ def crear_frame_duplicados(parent, on_close=None):
     tree.heading("Archivo", text="Archivo")
     tree.heading("Tamaño", text="Tamaño")
     tree.heading("Ruta completa", text="Ruta completa")
-    tree.column("check", width=32, anchor="center")
-    tree.column("Archivo", width=200)
-    tree.column("Tamaño", width=80)
-    tree.column("Ruta completa", width=340)
-    tree.pack(pady=10, fill="both", expand=True)
+    tree.column("check", width=40, anchor="center")
+    tree.column("Archivo", width=250)
+    tree.column("Tamaño", width=100)
+    tree.column("Ruta completa", width=400)
+    
+    tree_frame = tk.Frame(frame, bg="#F0F2F5")
+    tree_frame.pack(fill="both", expand=True, padx=20, pady=10)
+    tree.pack(side="left", fill="both", expand=True)
 
 # Agrega una srollbar a la lista de resultados
-    scrollbar = ttk.Scrollbar(frame, orient="vertical", command=tree.yview)
+    scrollbar = ttk.Scrollbar(tree_frame, orient="vertical", command=tree.yview)
     tree.configure(yscroll=scrollbar.set)
     scrollbar.pack(side="right", fill="y")
 
@@ -135,8 +142,11 @@ def crear_frame_duplicados(parent, on_close=None):
                         pass
 
                     procesados += 1
-                    progreso["value"] = procesados
-                    frame.update_idletasks()
+                    try:
+                        progreso["value"] = procesados
+                        frame.update_idletasks()
+                    except tk.TclError:
+                        return # The window was closed
 
         # Mostramos los resultados finales
         if stop_event.is_set(): #si se ha solicitado la cancelancion se detiene el escaneo
@@ -238,29 +248,34 @@ def crear_frame_duplicados(parent, on_close=None):
         lbl_estado.config(text="Cancelando escaneo...")
 
     def cerrar_o_volver():
+        stop_event.set()
         if callable(on_close):
             on_close()
         else:
             parent.winfo_toplevel().destroy()
 
     # === BOTONES ===
-    btn_cancelar = ttk.Button(frame_botones, text="Cancelar", command=cancelar_escaneo, state="normal")
-    btn_eliminar = ttk.Button(frame_botones, text="Eliminar seleccionados", command=eliminar_seleccionados)
-    btn_sel_todo = ttk.Button(frame_botones, text="Seleccionar todo", command=seleccionar_todo)
-    btn_desel_todo = ttk.Button(frame_botones, text="Deseleccionar todo", command=deseleccionar_todo)
-    btn_papelera = ttk.Button(frame_botones, text="Abrir papelera", command=abrir_papelera)
-    btn_salir = ttk.Button(
-        frame_botones,
-        text=("Volver" if callable(on_close) else "Salir"),
-        command=cerrar_o_volver
-    )
+    def crear_btn(p, txt, col, cmd):
+        b = tk.Button(p, text=txt, command=cmd, bg=col, fg="white", font=("Segoe UI", 9, "bold"), relief="flat", cursor="hand2")
+        return b
 
-    btn_eliminar.pack(side="right", padx=(5, 0))
+    btn_salir = crear_btn(frame_botones, "↩ Volver" if callable(on_close) else "Salir", "#34495E", cerrar_o_volver)
+    btn_salir.pack(side="right", padx=(5, 0))
+
+    btn_papelera = crear_btn(frame_botones, "🗄 Abrir papelera", "#7F8C8D", abrir_papelera)
+    btn_papelera.pack(side="right", padx=(5, 5))
+
+    btn_eliminar = crear_btn(frame_botones, "🗑️ Eliminar", "#E74C3C", eliminar_seleccionados)
+    btn_eliminar.pack(side="right", padx=(5, 5))
+
+    btn_desel_todo = crear_btn(frame_botones, "☐ Deseleccionar", "#BDC3C7", deseleccionar_todo)
+    btn_desel_todo.pack(side="right", padx=(5, 5))
+
+    btn_sel_todo = crear_btn(frame_botones, "☑️ Seleccionar", "#2980B9", seleccionar_todo)
+    btn_sel_todo.pack(side="right", padx=(5, 5))
+
+    btn_cancelar = tk.Button(frame_botones, text="✖ Cancelar", command=cancelar_escaneo, bg="#E74C3C", fg="white", font=("Segoe UI", 9, "bold"), relief="flat", cursor="hand2", state="normal")
     btn_cancelar.pack(side="right", padx=(0, 5))
-    btn_papelera.pack(side="right", padx=(0, 5))
-    btn_desel_todo.pack(side="right", padx=(0, 5))
-    btn_sel_todo.pack(side="right", padx=(0, 5))
-    btn_salir.pack(side="right", padx=(0, 5))
 
     iniciar_escaneo()
 
