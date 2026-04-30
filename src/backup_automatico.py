@@ -27,27 +27,30 @@ def crear_frame_backup(parent, on_close=None):
     user_home = Path.home()
     desktop = user_home / "Desktop"
 
-    frame = tk.Frame(parent)
+    frame = tk.Frame(parent, bg="#F0F2F5")
+
+    title = tk.Label(frame, text="⚙️ Copia de Seguridad Automática", font=("Segoe UI", 16, "bold"), bg="#F0F2F5", fg="#2C3E50")
+    title.pack(anchor="w", padx=20, pady=(20, 5))
 
     # Top info
-    frame_top = tk.Frame(frame)
-    frame_top.pack(fill="x", padx=10, pady=(10, 0))
+    frame_top = tk.Frame(frame, bg="#F0F2F5")
+    frame_top.pack(fill="x", padx=20, pady=(10, 0))
     lbl_info = tk.Label(
         frame_top,
         text="Se harán Copias de Seguridad solo de las carpetas: Descargas, Música, Imágenes y Videos",
-        anchor="w",
+        anchor="w", font=("Segoe UI", 10), bg="#F0F2F5", fg="#333333"
     )
     lbl_info.pack(fill="x")
 
-    progreso = ttk.Progressbar(frame, orient="horizontal", mode="determinate", length=600)
-    progreso.pack(padx=10, pady=10)
+    progreso = ttk.Progressbar(frame, orient="horizontal", mode="determinate")
+    progreso.pack(fill="x", padx=20, pady=10)
 
-    lbl_estado = tk.Label(frame, text="Preparando...", anchor="w")
-    lbl_estado.pack(fill="x", padx=10)
+    lbl_estado = tk.Label(frame, text="Preparando...", anchor="w", font=("Segoe UI", 11), bg="#F0F2F5", fg="#333333")
+    lbl_estado.pack(fill="x", padx=20)
 
     # Listado de archivos añadidos
-    frame_list = tk.Frame(frame)
-    frame_list.pack(fill="both", expand=True, padx=10, pady=5)
+    frame_list = tk.Frame(frame, bg="#F0F2F5")
+    frame_list.pack(fill="both", expand=True, padx=20, pady=10)
     listbox = tk.Listbox(frame_list, height=12)
     listbox.pack(side="left", fill="both", expand=True)
     scrollbar = ttk.Scrollbar(frame_list, orient="vertical", command=listbox.yview)
@@ -55,9 +58,9 @@ def crear_frame_backup(parent, on_close=None):
     listbox.config(yscrollcommand=scrollbar.set)
 
     # Botones (abajo derecha)
-    frame_bot = tk.Frame(frame)
-    frame_bot.pack(fill="x", padx=10, pady=10)
-    btn_cancel = ttk.Button(frame_bot, text="Cancelar")
+    frame_bot = tk.Frame(frame, bg="#F0F2F5")
+    frame_bot.pack(fill="x", padx=20, pady=10)
+    btn_cancel = tk.Button(frame_bot, text="✖ Cancelar", bg="#E74C3C", fg="white", font=("Segoe UI", 9, "bold"), relief="flat", cursor="hand2")
     btn_cancel.pack(side="right")
 
     stop_event = threading.Event()
@@ -85,7 +88,10 @@ def crear_frame_backup(parent, on_close=None):
         frame.after(0, lambda: lbl_estado.config(text=text))
 
     def update_progress_safe(value):
-        frame.after(0, lambda: progreso.config(value=value))
+        try:
+            frame.after(0, lambda: progreso.config(value=value))
+        except Exception:
+            pass
 
     def finish_ui(message=None):
         """Se ejecuta cuando finaliza o se cancela el backup."""
@@ -102,7 +108,7 @@ def crear_frame_backup(parent, on_close=None):
                 except Exception:
                     pass
 
-        frame.after(0, lambda: btn_cancel.config(text="Volver", command=volver_action, state="normal"))
+        frame.after(0, lambda: btn_cancel.config(text="↩ Volver", command=volver_action, state="normal", bg="#34495E"))
 
     #función worker del backup (se ejecuta en hilo separado)
     def worker():
@@ -164,7 +170,7 @@ def crear_frame_backup(parent, on_close=None):
     #función para manejar el botón cancelar
     def on_cancel():
         # Si botón ya fue convertido a "Volver", ejecutar el callback
-        if btn_cancel.cget("text") == "Volver":
+        if btn_cancel.cget("text") == "↩ Volver":
             if callable(on_close):
                 on_close()
             else:
